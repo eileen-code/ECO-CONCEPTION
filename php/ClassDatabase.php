@@ -5,7 +5,7 @@ class ClassDatabase
     private ?PDO $pdo = null;
 
     private string $host = 'localhost';
-    private int $port = 3306;
+    private int $port = 3305;
     private string $dbname = 'mellifica';
     private string $username = 'root';
     private string $password = '';

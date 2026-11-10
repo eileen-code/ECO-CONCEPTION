@@ -1,4 +1,14 @@
 <?php
+/*
+ * ECO-CONCEPTION (pilier Planete) - page Miels :
+ *  - l'ancienne balise <img ...></img> etait invalide (<img> est une
+ *    balise auto-fermante, elle ne peut pas avoir de fermante </img>) :
+ *    retiree pour corriger les erreurs des validateurs W3C.
+ *  - ajout de alt (accessibilite / WAVE), width/height (evite le
+ *    redimensionnement affiche-navigateur reperee par GreenIT ET reserve
+ *    l'espace pour eviter un saut de mise en page) et loading="lazy"
+ *    (les images hors ecran ne sont telechargees qu'au scroll).
+ */
 require_once("ClassMiel.php");
 
 $oMiel = new ClassMiel();

@@ -25,20 +25,15 @@ body{
 }
 
 nav{
-    width: 50%;
-    margin-top: var(--marginTop);
-}
-
-nav ul{
     display: flex;
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
     flex-wrap: wrap;
 
-    list-style: none;
-    margin: 0;
-    padding: 0;
+    width: 50%;
+    margin-top: var(--marginTop);
+
 }
 
 a{
@@ -161,7 +156,7 @@ MEDIAQUERY
 @media screen and (max-width: 768px) {
     /* Vos règles CSS pour les petits écrans */
 
-    nav ul {
+    nav {
         flex-direction: column;
     }
 
