@@ -1,0 +1,17 @@
+<?php
+require_once("ClassMiel.php");
+
+$oMiel = new ClassMiel();
+$miels = $oMiel->getTypeOfMiels();
+echo "<div class='tous-les-produits'>";
+foreach ($miels as $miel) {
+    $nom = htmlspecialchars($miel['type']);
+    $photo = htmlspecialchars($miel['photo']);
+    echo "<div class='produit'>";
+    echo "<div>".$nom."</div>";
+    // Ajout de alt pour l'image du miel
+    echo "<img class='img-produit' src='".$photo."' alt='".$nom."'>";
+    echo "</div>";
+}
+echo "</div>"
+?>
