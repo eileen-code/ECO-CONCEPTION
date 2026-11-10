@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,16 +19,20 @@
             <div id="titre">Mellifica</div>
             <img id="gif" src="./gif/abeille.webp">
         </header>
-        <nav>
-            <div><a href="#" onclick="loadPage(this, event)">Accueil</a></div>
-            <div></div><a href="#" onclick="loadPage(this, event)">Miels</a></div>
-            <div></div><a href="#" onclick="loadPage(this, event)">Produits dérivés</a></div>
-            <div></div><a href="#" onclick="loadPage(this, event)">Fabrication</a></div>
-            <div></div><a href="#" onclick="loadPage(this, event)">Contact</a></div>
-        </nav>
+        <nav aria-label="Menu principal">
+   <ul style="list-style: none; margin: 0; padding: 0;">
+        <li><a href="#" onclick="loadPage(this, event)" aria-current="page">Accueil</a></li>
+        <li><a href="#" onclick="loadPage(this, event)">Miels</a></li>
+        <li><a href="#" onclick="loadPage(this, event)">Produits dérivés</a></li>
+        <li><a href="#" onclick="loadPage(this, event)">Fabrication</a></li>
+        <li><a href="#" onclick="loadPage(this, event)">Contact</a></li>
+    </ul>
+</nav>
         <main>
-            <div id="soustitre"></div>
-            <section></section>
+            <div id="contenu"></div>
+              <section>
+                 <h2>Nos miels</h2>
+              </section>
         </main>
         <footer>
             <address>
