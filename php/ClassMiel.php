@@ -1,5 +1,5 @@
 <?php
-require_once("ClassDatabase.php");
+require_once(__DIR__ . "/ClassDatabase.php");
 
 class ClassMiel {
     private ClassDatabase $db;
@@ -10,7 +10,8 @@ class ClassMiel {
 
     public function getTypeOfMiels(): array {
         $dbConnect = $this->db->getConnection();
-        $query = "SELECT * FROM miel";
+        // Requête fixe, sans donnée utilisateur.
+        $query = "SELECT id, type, photo FROM miel ORDER BY type";
         $stmt = $dbConnect->query($query);
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $this->db->disconnect();

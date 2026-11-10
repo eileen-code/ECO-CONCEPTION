@@ -14,6 +14,10 @@ html, body{
     height: 100%;
 }
 
+*{
+    box-sizing: border-box;
+}
+
 body{
     display: flex;
     flex-direction: column;
@@ -22,7 +26,9 @@ body{
 
     font-family: Arial, Helvetica, sans-serif;
     color:darkgreen;
+    background-color: #fff;
     margin : 0;
+    line-height: 1.5;
 }
 
 main{
@@ -34,7 +40,7 @@ main{
     flex: 1;
 
     margin-top: var(--marginTop);
-    width: 100%;
+    width: min(100% - 32px, 42rem);
 }
 
 section{
@@ -66,14 +72,58 @@ form{
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 12px;
 }
 
 form div{
-    margin-top: var(--marginTop);
+    margin-top: 0;
+    width: min(100%, 22rem);
 }
-label, input{
-    display: inline-block;
-    width: var(--widthinput);
+
+label{
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="file"]{
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-height: 42px;
+    padding: 8px 10px;
+    border: 1px solid #536b53;
+    border-radius: var(--borderRadius);
+    color: #173817;
+    background: #fff;
+    font: inherit;
+}
+
+input:focus-visible,
+button:focus-visible{
+    outline: 3px solid #145c14;
+    outline-offset: 3px;
+}
+
+form#formConnexion{
+    width: min(100%, 26rem);
+    padding: 0 16px;
+}
+
+.erreur{
+    width: min(100%, 22rem);
+    margin: 0;
+    padding: 12px;
+    border: 1px solid #8b1e1e;
+    border-radius: var(--borderRadius);
+    color: #7a1717;
+    background: #fdeaea;
+}
+
+.erreur:empty{
+    display: none;
 }
 
 /*****************
@@ -102,13 +152,18 @@ IDENTIFIANTS
 CLASSES
 *****************/
 .bouton {
+    display: inline-block;
+    box-sizing: border-box;
     color: black;
     background-color: lightgray;
-    width: var(--widthinput);
+    min-width: 110px;
+    min-height: 44px;
+    padding: 6px 12px;
     border: solid 1px grey; 
     border-radius: var(--borderRadius);
     text-align: center;
     cursor: pointer;
+    font: inherit;
 }
 .bouton:active {
     background-color: gray;
@@ -116,27 +171,104 @@ CLASSES
 }
 
 .modifyMiel{
+    box-sizing: border-box;
     width: 100%;
+    padding: 16px;
     flex-direction: row;
-    justify-content: flex-start;
+    justify-content: center;
+    align-items: end;
+    flex-wrap: wrap;
+    gap: 12px;
 }
 
-.modifyMiel label{
-    width: 170px;
-    margin-left: 2px;
-    margin-right: 2px;
-    text-align: right;
+.field{
+    display: flex;
+    flex: 1 1 220px;
+    flex-direction: column;
+    min-width: 0;
 }
 
-.modifyMiel div{
-    margin-top: 0px;
-    margin-left: 4px;
+.field input{
+    width: 100%;
+    min-height: 36px;
+}
+
+.miel-item{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: min(100%, 900px);
+    margin: 8px 0;
+    border-bottom: 1px solid #d5dfd5;
+}
+
+.miel-photo{
+    width: 90px;
+    height: 70px;
+    object-fit: contain;
+}
+
+.delete-form{
+    padding: 0 16px 16px;
+}
+
+.bouton-danger{
+    border-color: #8b1e1e;
+    color: #8b1e1e;
+}
+
+.message{
+    width: min(90%, 800px);
+    padding: 10px 14px;
+    border-radius: var(--borderRadius);
+}
+
+.message-success{
+    color: #145214;
+    background: #e7f4e7;
+}
+
+.message-error{
+    color: #7a1717;
+    background: #fdeaea;
 }
 
 /*****************
 MEDIAQUERY
 *****************/
 @media screen and (max-width: 768px) {
-    /* Vos règles CSS pour les petits écrans */
+    header{
+        flex-direction: column;
+        width: 100%;
+        margin-top: 24px;
+        gap: 12px;
+    }
 
+    main{
+        margin-top: 24px;
+    }
+
+    #titre{
+        margin: 0;
+    }
+
+    form#formConnexion{
+        width: 100%;
+    }
+
+    .modifyMiel{
+        align-items: stretch;
+        padding: 12px 0;
+    }
+
+    .field{
+        flex-basis: 100%;
+    }
+
+    .miel-item{
+        flex-direction: column;
+        align-items: stretch;
+        padding: 12px;
+    }
 }

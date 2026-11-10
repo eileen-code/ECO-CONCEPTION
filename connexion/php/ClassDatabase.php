@@ -4,16 +4,21 @@ class ClassDatabase
 {
     private ?PDO $pdo = null;
 
-    private string $host = 'localhost';
-    private int $port = 3306;
-    private string $dbname = 'mellifica';
-    private string $username = 'root';
-    private string $password = '';
+    // En production, définir les identifiants avec les variables MELLIFICA_DB_*.
+    private string $host;
+    private int $port;
+    private string $dbname;
+    private string $username;
+    private string $password;
     private string $charset = 'utf8mb4';
 
     public function __construct()
     {
-        // vide
+        $this->host = getenv('MELLIFICA_DB_HOST') ?: 'localhost';
+        $this->port = (int) (getenv('MELLIFICA_DB_PORT') ?: 3306);
+        $this->dbname = getenv('MELLIFICA_DB_NAME') ?: 'mellifica';
+        $this->username = getenv('MELLIFICA_DB_USER') ?: 'root';
+        $this->password = getenv('MELLIFICA_DB_PASSWORD') ?: '';
     }
 
     /**
@@ -39,7 +44,8 @@ class ClassDatabase
             try {
                 $this->pdo = new PDO($dsn, $this->username, $this->password, $options);
             } catch (PDOException $e) {
-                // En prod, ne pas afficher le détail brut à l'utilisateur
+                // Détail réservé au journal serveur.
+                error_log($e->getMessage());
                 throw new RuntimeException('Erreur de connexion à la base de données.');
             }
         }

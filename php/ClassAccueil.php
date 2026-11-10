@@ -1,5 +1,5 @@
 <?php
-require_once("classDatabase.php");
+require_once(__DIR__ . "/ClassDatabase.php");
 
 class ClassAccueil {
     private ClassDatabase $db;

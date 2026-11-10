@@ -1,78 +1,83 @@
-/********************************
-VARIABLES
-********************************/
-#containerSlider, #slider>img{
-	--width-pics: 30rem;
-	--height-pics: 15rem;
-}
-/********************************
-CONTENEUR GLOBAL
-Contient le container #containerSlider et #scroll
-********************************/
-#viewer{
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-}
-/********************************
-CONTENEUR
-Contient le slider d'image qui coulissera dedans. 
-Les images débordent du conteneur parent seront masquées 
-********************************/
-#containerSlider{
-/*	
-	width: 50rem;
-	height: 30rem;
-*/	
-	width: var(--width-pics);
-	height: var(--height-pics);
-	
-	position: relative;
-	margin: auto;
-	
-	border: 1px solid lightgray;
-	border-radius: 1rem;
-	background-color: white;
-	
-	overflow: hidden;	
-}
-/********************************
-SLIDER
-Contient les images à disposition horizontale. 
-********************************/
-#slider{
-	display: flex;
-	flex-direction: row;
-	position : absolute;
-	left: 0px;
-	transition: left 1s;
+#viewer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
 }
 
-#slider>img{
-/*	
-	width: 50rem;
-	height: 30rem;
-*/	
-	width: var(--width-pics);
-	height: var(--height-pics);
-}
-/********************************
-SCROLL  VIEWER
-Ronds colorés selon l'évolution du slider 
-********************************/
-#scroll{
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: center;
+#containerSlider {
+    width: min(100%, 30rem);
+    aspect-ratio: 2 / 1;
+    position: relative;
+    overflow: hidden;
+    margin: auto;
+    border: 1px solid lightgray;
+    border-radius: 1rem;
+    background-color: white;
 }
 
-.selectorViewer{
-	width: 2rem;
-	height: 2rem;
-/*	background-color: white;*/
-	border: 1px solid lightgray;
-	border-radius: 1rem; 
-	cursor: pointer;
+#slider {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    inset: 0 auto auto 0;
+    transition: transform 1s;
+}
+
+#slider > img {
+    flex: 0 0 100%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#scroll {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.selectorViewer {
+    width: 1rem;
+    height: 1rem;
+    padding: 0;
+    border: 1px solid #006400;
+    border-radius: 50%;
+    background-color: white;
+    cursor: pointer;
+}
+
+.selectorViewer.is-active {
+    background-color: #54b454;
+}
+
+.selectorViewer:focus-visible {
+    outline: 3px solid #000;
+    outline-offset: 3px;
+}
+
+.viewer-playback {
+    min-height: 2rem;
+    padding: 0.25rem 0.6rem;
+    border: 1px solid #006400;
+    border-radius: 0.25rem;
+    background: white;
+    color: #006400;
+    cursor: pointer;
+}
+
+.viewer-playback:focus-visible {
+    outline: 3px solid #000;
+    outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #slider {
+        transition: none;
+    }
 }

@@ -1,15 +1,14 @@
-<!DOCTYPE html>
 <?php
-    session_start();
-    if(!isset($_SESSION['user'])){
-        header('Location: ../index.php');
-        exit;
-    }else{
-        require_once("./php/ClassMiel.php");
-        $miel = new ClassMiel();
-        $miels = $miel->getListMiels();
-    }
+require_once(__DIR__ . "/php/adminMiel.php");
+require_once(__DIR__ . "/php/ClassMiel.php");
+requireAdminSession();
+$csrfToken = adminCsrfToken();
+$flash = $_SESSION['admin_flash'] ?? null;
+unset($_SESSION['admin_flash']);
+$miel = new ClassMiel();
+$miels = $miel->getListMiels();
 ?>
+<!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8">
@@ -20,57 +19,70 @@
     </head>
     <body>
         <header>
-            <img id="logo" src="img/logo_Mellifica.png" alt="Logo de Mellifica" />
-            <div id="titre">Mellifica</div>
-            <img id="gif" src="./gif/abeille.gif">
+            <img id="logo" src="../img/logo_Mellifica.webp" alt="Logo de Mellifica" />
+            <h1 id="titre">Mellifica</h1>
+            <img id="gif" src="../gif/abeille.webp" alt="">
         </header>
-        <form id="formDeconnexion" action="./php/deconnexion.php" method="GET">
-                <div class="bouton" onclick="envoiFormulaire(this.closest('form'))">Déconnexion</div>
-            </form>
+        <form id="formDeconnexion" action="./php/deconnexion.php" method="POST">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
+            <button class="bouton" type="submit">Déconnexion</button>
+        </form>
         <main>
-            <div id="soustitre">Connexion</div>
-<!-- Ajout Miel -->             
+            <h1 id="soustitre">Gestion des miels</h1>
+            <?php if (is_array($flash)): ?>
+                <p class="message message-<?= htmlspecialchars($flash['type'], ENT_QUOTES, 'UTF-8') ?>"
+                   role="<?= $flash['type'] === 'error' ? 'alert' : 'status' ?>">
+                    <?= htmlspecialchars($flash['message'], ENT_QUOTES, 'UTF-8') ?>
+                </p>
+            <?php endif; ?>
             <section>               
-                <p>Ajouter Miel</p>
-                <form class="modifyMiel" action="./php/ajouterMiel.php" method="POST">
-                    <label for="type">Type de miel :</label>
-                    <input type="text" id="type" name="type">
-
-                    <label for="photo">Chemin de la photo :</label>
-                    <input type="text" id="photo" name="photo">
-
-                    <div class="bouton" onclick="envoiFormulaire(this.closest('form'))">Ajouter</div>
+                <h2>Ajouter un miel</h2>
+                <form class="modifyMiel" action="./php/ajouterMiel.php" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
+                    <div class="field">
+                        <label for="type">Type de miel</label>
+                        <input type="text" id="type" name="type" maxlength="255" required>
+                    </div>
+                    <div class="field">
+                        <label for="photo">Photo (JPG, PNG, GIF ou WebP, 5 Mo maximum)</label>
+                        <input type="file" id="photo" name="photo" accept="image/jpeg,image/png,image/gif,image/webp" required>
+                    </div>
+                    <button class="bouton" type="submit">Ajouter</button>
                 </form>
             </section>
-<!-- Suppression Miel -->              
             <section>
-                <p>Supprimer</p>
+                <h2>Miels enregistrés</h2>
                 <?php if (empty($miels)): ?>
                     <div>Aucun miel enregistré.</div>
                 <?php else: ?>
                     <?php foreach ($miels as $unMiel): ?>
-                        <div class="modifyMiel">
-                            <span>
-                                <?= htmlspecialchars(
-                                    $unMiel['type'] ?? '',
-                                    ENT_QUOTES,
-                                    'UTF-8'
-                                ) ?>
-                            </span>
-                            <span>
-                                Identifiant :
-                                <?= (int) $unMiel['id'] ?>
-                            </span>
-                            <form action="./php/supprimerMiel.php" method="POST">
-                                <input
-                                    type="hidden"
-                                    name="id"
-                                    value="<?= (int) $unMiel['id'] ?>"
-                                >
-                                <div class="bouton" onclick="envoiFormulaire(this.closest('form'))">Supprimer</div>
+                        <article class="miel-item">
+                            <img class="miel-photo"
+                                 src="../<?= htmlspecialchars($unMiel['photo'], ENT_QUOTES, 'UTF-8') ?>"
+                                 alt="Photo du miel <?= htmlspecialchars($unMiel['type'], ENT_QUOTES, 'UTF-8') ?>">
+                            <form class="modifyMiel" action="./php/modifierMiel.php" method="POST" enctype="multipart/form-data">
+                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
+                                <input type="hidden" name="id" value="<?= (int) $unMiel['id'] ?>">
+                                <div class="field">
+                                    <label for="type-<?= (int) $unMiel['id'] ?>">Type de miel</label>
+                                    <input type="text" id="type-<?= (int) $unMiel['id'] ?>" name="type"
+                                           value="<?= htmlspecialchars($unMiel['type'], ENT_QUOTES, 'UTF-8') ?>"
+                                           maxlength="255" required>
+                                </div>
+                                <div class="field">
+                                    <label for="photo-<?= (int) $unMiel['id'] ?>">Remplacer la photo (facultatif)</label>
+                                    <input type="file" id="photo-<?= (int) $unMiel['id'] ?>" name="photo"
+                                           accept="image/jpeg,image/png,image/gif,image/webp">
+                                </div>
+                                <button class="bouton" type="submit">Enregistrer les modifications</button>
                             </form>
-                        </div>
-                        <hr>
+                            <form class="delete-form" action="./php/supprimerMiel.php" method="POST"
+                                  onsubmit="return confirm('Supprimer ce miel ?');">
+                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
+                                <input type="hidden" name="id" value="<?= (int) $unMiel['id'] ?>">
+                                <button class="bouton bouton-danger" type="submit">Supprimer</button>
+                            </form>
+                        </article>
                     <?php endforeach; ?>
                 <?php endif; ?>
             </section>

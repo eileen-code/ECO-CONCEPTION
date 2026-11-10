@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <images>
+    <!-- Versions WebP optimisées du diaporama. -->
     <image>
-        <src>./PhotosSlider/img01.jpg</src>
+        <src>./PhotosSlider/img01.webp</src>
         <alt>Récolte de miel</alt>
     </image>
     <image>
-        <src>./PhotosSlider/img02.jpg</src>
+        <src>./PhotosSlider/img02.webp</src>
         <alt>Récolte de miel</alt>
     </image>
     <image>
-        <src>./PhotosSlider/img03.jpg</src>
+        <src>./PhotosSlider/img03.webp</src>
         <alt>Récolte de miel</alt>
     </image>
     <image>
-        <src>./PhotosSlider/img04.jpg</src>
+        <src>./PhotosSlider/img04.webp</src>
         <alt>Récolte de miel</alt>
     </image>
     <image>
-        <src>./PhotosSlider/img05.jpg</src>
+        <src>./PhotosSlider/img05.webp</src>
         <alt>Récolte de miel</alt>
     </image>
 </images>

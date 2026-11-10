@@ -1,5 +1,5 @@
 <?php
-require_once("classDatabase.php");
+require_once(__DIR__ . "/ClassDatabase.php");
 
 class ClassConnexion {
     private ClassDatabase $db;
@@ -9,18 +9,13 @@ class ClassConnexion {
     }
 
     public function connect($pLogin, $pPassword): bool {
-        // Vérifier le type des données reçues
         if (!is_string($pLogin) || !is_string($pPassword)) {
             return false;
-            exit;
-        }else{
-            
         }
 
         $login = trim($pLogin);
         $password = $pPassword;
 
-        // Vérifier les champs
         if ($login === '' || $password === '') {
             return false;
             exit;
@@ -31,15 +26,14 @@ class ClassConnexion {
             exit;
         }
 
-        // Récupérer la connexion PDO
         $pdo = $this->db->getConnection();
 
-        // Rechercher l'utilisateur uniquement par son login
         $sql = "SELECT login, motdepasse
                 FROM utilisateur
                 WHERE login = :login
                 LIMIT 1";
 
+        // Le login est lié comme donnée, jamais injecté dans la requête.
         $stmt = $pdo->prepare($sql);
         $stmt->execute([
             'login' => $login
@@ -47,12 +41,19 @@ class ClassConnexion {
 
         $utilisateur = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // Vérifier le mot de passe haché
-        if ($utilisateur !== false && password_verify($password, $utilisateur['motdepasse'])){
-            $result = true;
-        }else{
-            $result = false;
+        $result = $utilisateur !== false
+            && password_verify($password, $utilisateur['motdepasse']);
+
+        if ($result && password_needs_rehash($utilisateur['motdepasse'], PASSWORD_DEFAULT)) {
+            $rehash = $pdo->prepare(
+                "UPDATE utilisateur SET motdepasse = :motdepasse WHERE login = :login"
+            );
+            $rehash->execute([
+                'motdepasse' => password_hash($password, PASSWORD_DEFAULT),
+                'login' => $login
+            ]);
         }
+
         $this->db->disconnect();
         return $result;
     }

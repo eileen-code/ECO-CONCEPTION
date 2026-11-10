@@ -1,20 +1,18 @@
 <?php
-    $route = $_GET["page"];
+$pages = [
+    'Accueil' => 'accueil.php',
+    'Miels' => 'miels.php',
+    'Produits dérivés' => 'produitsDerives.php',
+    'Fabrication' => 'video.php',
+    'Contact' => 'contact.php'
+];
 
-    if($route == "Miels"){
-        require_once("miels.php");
-    }
-    elseif($route == "Produits dérivés"){
-        require_once("produitsDerives.php");
-    }
-    elseif($route == "Contact"){
-        require_once("contact.php");
-    }
-    elseif($route == "Fabrication"){
-        require_once("video.php");
-    }    
-    else{
-        require_once("accueil.php");
-    }
+$route = $_GET['page'] ?? 'Accueil';
+if (!is_string($route) || !isset($pages[$route])) {
+    http_response_code(404);
+    echo 'Page introuvable.';
+    exit;
+}
 
+require __DIR__ . DIRECTORY_SEPARATOR . $pages[$route];
 ?>

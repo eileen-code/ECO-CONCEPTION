@@ -1,61 +1,97 @@
-/******************************************
-Affichage au chargemenet de la page d'accueil
-******************************************/  
-window.addEventListener("load", function() {
-    const myPage = "Accueil";
-    // Mise à jour du titre de la page
-    const sousTitre = document.getElementById("soustitre");
-    sousTitre.innerHTML = myPage;
+let currentPageRequest;
 
-    // Create an XMLHttpRequest object
-    const xhttp = new XMLHttpRequest();
+window.addEventListener("DOMContentLoaded", function () {
+    const requestedPage = new URLSearchParams(window.location.search).get("page");
+    const initialLink = getPageLink(requestedPage)
+        || document.querySelector("nav a[aria-current='page']")
+        || document.querySelector("nav a");
 
-    // Define a callback function
-    xhttp.onload = function() {
-        document.getElementsByTagName("section")[0].innerHTML = this.responseText
-        // Chargement du viewer
-        const containerViewer = window.document.getElementById("viewer");
-        // Chargement des images du viewer
-        loadImg("./viewer/imgViewer.xml", containerViewer);
-        // Timer de défilement des images du viewer
-        myTimerInterval = setInterval(myTimerScrollImg, timeScrolling);    
+    if (initialLink) {
+        loadPage(initialLink);
     }
-
-    xhttp.onerror = function() {
-        let errorString = "Page introuvable"
-        document.getElementsByTagName("section")[0].innerHTML = errorString;
-    }
-
-    xhttp.open("GET", "./php/routage.php?page=" + encodeURIComponent(myPage));
-    xhttp.send();   
 });
 
-/******************************************
-Fonction dédiée à charger le contenu d'une page dans la section principale de la page index.html
-******************************************/
-function loadPage(element, event){
-    // stoppe la propagation de l'événement 
-    event.preventDefault();
-
-    const myPage = element.innerHTML;
-
-    // Mise à jour du titre de la page
-    const sousTitre = document.getElementById("soustitre");
-    sousTitre.innerHTML = myPage;
-
-    // Create an XMLHttpRequest object
-    const xhttp = new XMLHttpRequest();
-
-    // Define a callback function
-    xhttp.onload = function() {
-        document.getElementsByTagName("section")[0].innerHTML = this.responseText
+window.addEventListener("popstate", function () {
+    const pageName = new URLSearchParams(window.location.search).get("page");
+    const link = getPageLink(pageName)
+        || document.querySelector("nav a[href='?page=Accueil']");
+    if (link) {
+        loadPage(link);
     }
-    xhttp.onerror = function() {
-        let errorString = "Page introuvable"
-        document.getElementsByTagName("section")[0].innerHTML = errorString;
+});
+
+function getPageLink(pageName) {
+    if (!pageName) {
+        return null;
     }
 
-    xhttp.open("GET", "./php/routage.php?page=" + encodeURIComponent(myPage));
-    xhttp.send();
+    return Array.from(document.querySelectorAll("nav a")).find(function (link) {
+        return link.textContent.trim() === pageName;
+    }) || null;
 }
 
+function loadPage(link, event) {
+    if (event) {
+        event.preventDefault();
+    }
+
+    const pageName = link.textContent.trim();
+    const content = document.getElementById("contenu");
+    const subtitle = document.getElementById("soustitre");
+
+    if (!content || !subtitle) {
+        console.error("La zone de contenu ou le titre de page est introuvable.");
+        return;
+    }
+
+    if (typeof stopViewer === "function") {
+        stopViewer();
+    }
+
+    document.querySelectorAll("nav a").forEach(function (navLink) {
+        navLink.removeAttribute("aria-current");
+    });
+    link.setAttribute("aria-current", "page");
+    if (event && window.location.search !== link.search) {
+        window.history.pushState({ page: pageName }, "", link.href);
+    }
+    subtitle.textContent = pageName;
+    content.textContent = "Chargement…";
+
+    if (currentPageRequest) {
+        currentPageRequest.abort();
+    }
+
+    const request = new XMLHttpRequest();
+    currentPageRequest = request;
+    request.onload = function () {
+        if (currentPageRequest !== request
+            || link.getAttribute("aria-current") !== "page") {
+            return;
+        }
+
+        if (this.status < 200 || this.status >= 300) {
+            content.textContent = "La page n’a pas pu être chargée.";
+            return;
+        }
+
+        // Le routeur n’accepte que des pages connues ; les données PHP sont échappées.
+        content.innerHTML = this.responseText;
+        const viewer = content.querySelector("#viewer");
+        if (viewer && typeof loadImg === "function") {
+            loadImg("./viewer/imgViewer.xml", viewer);
+        }
+    };
+    request.onerror = function () {
+        if (currentPageRequest !== request) {
+            return;
+        }
+        content.textContent = "Erreur réseau : la page n’a pas pu être chargée.";
+    };
+    request.open(
+        "GET",
+        "./php/routage.php?page=" + encodeURIComponent(pageName),
+        true
+    );
+    request.send();
+}
