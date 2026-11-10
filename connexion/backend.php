@@ -1,4 +1,4 @@
-<!DOCTYPE html >
+<!DOCTYPE html>
 <?php
     session_start();
     if(!isset($_SESSION['user'])){
@@ -10,46 +10,53 @@
         $miels = $miel->getListMiels();
     }
 ?>
-<!-- Ajout de la langue du document -->
+<!-- ajout de lang="fr" pour que les lecteurs d'écran lisent la page en français -->
 <html lang="fr">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Mellifica</title>
+        <!-- titre de page précis pour savoir sur quelle page on se trouve -->
+        <title>Administration - Mellifica</title>
         <link href="style.css" rel="stylesheet" />
         <script src="./js/functions.js"></script>
     </head>
     <body>
         <header>
             <img id="logo" src="img/logo_Mellifica.png" alt="Logo de Mellifica" />
-            <div id="titre">Mellifica</div>
-            <!-- Ajout de alt pour l'image gif -->
-            <img id="gif" src="./gif/abeille.gif" alt="Gif d'une abeille en mouvement">
+            <!-- le titre du site devient un vrai titre <h1> au lieu d'une <div> -->
+            <h1 id="titre">Mellifica</h1>
+            <!-- ajout de alt="" : l'abeille est décorative, elle est ignorée par les lecteurs d'écran -->
+            <img id="gif" src="./gif/abeille.gif" alt="">
         </header>
         <form id="formDeconnexion" action="./php/deconnexion.php" method="GET">
-            <!-- Modification du bouton div en button pour respecter les normes d'accessibilité et de sémantique HTML -->
-                <button class="bouton" type="submit">Déconnexion</button>
-            </form>
+            <!-- la <div> cliquable devient un vrai bouton d'envoi : utilisable au clavier, sans onclick ni JavaScript -->
+            <button type="submit" class="bouton">Déconnexion</button>
+        </form>
         <main>
-            <div id="soustitre">Connexion</div>
-<!-- Ajout Miel -->             
-            <section>               
-                <p>Ajouter Miel</p>
+            <!-- titre <h2> corrigé : la page affichait "Connexion" alors qu'on est sur l'administration -->
+            <h2 id="soustitre">Administration</h2>
+<!-- Ajout Miel -->
+            <section>
+                <!-- le titre de section devient un <h3> au lieu d'un <p> (hiérarchie h1 > h2 > h3) -->
+                <h3>Ajouter un miel</h3>
                 <form class="modifyMiel" action="./php/ajouterMiel.php" method="POST">
-                    <label for="type">Type de miel :</label>
-                    <input type="text" id="type" name="type">
+                    <!-- required : champ obligatoire annoncé, le formulaire ne part pas vide -->
+                    <label for="type">Type de miel (obligatoire) :</label>
+                    <input type="text" id="type" name="type" required>
 
-                    <label for="photo">Chemin de la photo :</label>
-                    <input type="text" id="photo" name="photo">
-                    <!-- Modification du bouton div en button pour respecter les normes d'accessibilité et de sémantique HTML -->
-                    <button class="bouton" type="submit">Ajouter</button>
+                    <label for="photo">Chemin de la photo (obligatoire) :</label>
+                    <input type="text" id="photo" name="photo" required>
+
+                    <!-- vrai bouton d'envoi à la place de la <div> cliquable -->
+                    <button type="submit" class="bouton">Ajouter</button>
                 </form>
             </section>
-<!-- Suppression Miel -->              
+<!-- Suppression Miel -->
             <section>
-                <p>Supprimer</p>
+                <!-- le titre de section devient un <h3> au lieu d'un <p> -->
+                <h3>Supprimer un miel</h3>
                 <?php if (empty($miels)): ?>
-                    <div>Aucun miel enregistré.</div>
+                    <p>Aucun miel enregistré</p>
                 <?php else: ?>
                     <?php foreach ($miels as $unMiel): ?>
                         <div class="modifyMiel">
@@ -60,18 +67,17 @@
                                     'UTF-8'
                                 ) ?>
                             </span>
-                            <span>
-                                Identifiant :
-                                <?= (int) $unMiel['id'] ?>
-                            </span>
+                            <!-- suppression de l'affichage "Identifiant : X" : donnée interne inutile pour l'utilisateur
+                                 l'id reste transmis dans le champ caché du formulaire -->
                             <form action="./php/supprimerMiel.php" method="POST">
                                 <input
                                     type="hidden"
                                     name="id"
                                     value="<?= (int) $unMiel['id'] ?>"
                                 >
-                                <!-- Modification du bouton div en button pour respecter les normes d'accessibilité et de sémantique HTML -->
-                                <button class="bouton" type="submit">Supprimer</button>
+                                <!-- vrai bouton d'envoi + aria-label : le lecteur d'écran annonce quel miel est supprimé
+                                     au lieu de répéter "Supprimer" pour chaque ligne -->
+                                <button type="submit" class="bouton" aria-label="Supprimer le miel <?= htmlspecialchars($unMiel['type'] ?? '', ENT_QUOTES, 'UTF-8') ?>">Supprimer</button>
                             </form>
                         </div>
                         <hr>
