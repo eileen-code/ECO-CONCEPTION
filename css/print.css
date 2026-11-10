@@ -1,0 +1,29 @@
+/* Feuille de style dédiée à l'impression.
+   Objectif éco-conception : ne pas envoyer d'encre/papier inutile
+   (nav, vidéos, boutons) et garder uniquement le contenu utile. */
+
+@media print {
+    nav,
+    footer,
+    .video-facade,
+    .video-facade-play,
+    iframe,
+    .bouton {
+        display: none !important;
+    }
+
+    body {
+        background: #fff;
+        color: #000;
+    }
+
+    a {
+        color: #000;
+        text-decoration: underline;
+    }
+
+    img {
+        max-width: 100% !important;
+        page-break-inside: avoid;
+    }
+}

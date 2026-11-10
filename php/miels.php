@@ -9,7 +9,7 @@ foreach ($miels as $miel) {
     $photo = htmlspecialchars($miel['photo']);
     echo "<div class='produit'>";
     echo "<div>".$nom."</div>";
-    echo "<img class='img-produit' src='".$photo."'></img>";
+    echo "<img class='img-produit' src='".$photo."' alt='Pot de miel ".$nom."' width='100' height='150' loading='lazy'>";
     echo "</div>";
 }
 echo "</div>"
